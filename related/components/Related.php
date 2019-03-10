@@ -45,7 +45,7 @@ class Related extends ComponentBase
             'slug' => [
                 'description' => 'Post slug',
                 'title'       => 'Slug',
-                'default'     => ':slug',
+                'default'     => '{{:slug}}',
                 'type'        => 'string'
             ]
         ];
@@ -64,15 +64,19 @@ class Related extends ComponentBase
 
             $post = Post::where('slug',$slug)->first();
 
-            $firstCategory = $post->categories()->first();
+            if($post){
+                $firstCategory = $post->categories()->first();
 
-            $posts = $firstCategory->posts()
-                ->where('slug', '!=', $slug)
-                ->where('id', '!=', $post->id)
-                ->limit($limit)
-                ->get();
+                $posts = $firstCategory->posts()
+                    ->where('slug', '!=', $slug)
+                    ->where('id', '!=', $post->id)
+                    ->limit($limit)
+                    ->get();
 
-            return $posts;
+                return $posts;
+            }else{
+                return false;
+            }
         }else{
             return null;
         }
